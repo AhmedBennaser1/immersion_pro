@@ -22,31 +22,35 @@ def generate_json_file(categorie, titre, url):
    # print(url)
     out_questionnaire_data = {"categorie": categorie, "titre": titre, "questions": []}
     out_questions_data = []
-    response = requests.get(url)
     try:
-        data = json.loads(response.text)
-        all_quizz = data["quizz"]["fr"]
-        for quizz_title, quizz_data in all_quizz.items():
-            out_filename = get_quizz_filename(categorie, titre, quizz_title)
-            #print(out_filename)
-            out_questionnaire_data["difficulte"] = quizz_title
-            for question in quizz_data:
-                question_dict = {}
-                question_dict["titre"] = question["question"]
-                question_dict["choix"] = []
-                for ch in question["propositions"]:
-                    question_dict["choix"].append((ch, ch==question["réponse"]))
-                out_questions_data.append(question_dict)
-            out_questionnaire_data["questions"] = out_questions_data
-            out_json = json.dumps(out_questionnaire_data)
-           # print(out_filename)
-            file = open(out_filename, "w")
-            file.write(out_json)
-            file.close()
-           # print("end")
+        response = requests.get(url)
     except:
-        print("l'url:",url)
-   
+        print("there's no file like ",url)
+    else:
+        try:
+            data = json.loads(response.text)
+            all_quizz = data["quizz"]["fr"]
+            for quizz_title, quizz_data in all_quizz.items():
+                out_filename = get_quizz_filename(categorie, titre, quizz_title)
+                #print(out_filename)
+                out_questionnaire_data["difficulte"] = quizz_title
+                for question in quizz_data:
+                    question_dict = {}
+                    question_dict["titre"] = question["question"]
+                    question_dict["choix"] = []
+                    for ch in question["propositions"]:
+                        question_dict["choix"].append((ch, ch==question["réponse"]))
+                    out_questions_data.append(question_dict)
+                out_questionnaire_data["questions"] = out_questions_data
+                out_json = json.dumps(out_questionnaire_data)
+                # print(out_filename)
+                file = open(out_filename, "w")
+                file.write(out_json)
+                file.close()
+                # print("end")
+        except:
+            print("l'url:",url)
+
  
 
 
