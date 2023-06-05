@@ -20,6 +20,7 @@
 #
 import json
 import os
+import sys
 
 # def data_recieve():
 #     import os
@@ -54,6 +55,9 @@ class Question:
         bonne_rep=''.join(Br)
         q = Question(data["titre"], choix, bonne_rep)
         return q
+
+
+    
 
     def poser(self,num_quest,nb_quest):
         print("QUESTION",num_quest,"/",nb_quest)
@@ -97,10 +101,22 @@ class Questionnaire:
         self.difficulte = difficulte
 
     def FromJsonData(data):
-        question=questionnaire_data['questions']
+        question=data['questions']
         questions=[Question.FromJsonData(i) for i in question]
           
         return Questionnaire(questions,data["categorie"],data["titre"],data["difficulte"])
+
+        
+    def lancer_quest(filename):
+        try:
+            f=open(filename,"r")
+            json_data=f.read()
+            f.close()
+            questionnaire_data=json.loads(json_data)
+        except:
+            print("i can't read the file or lunch it check the file form ")
+            return None
+        return Questionnaire.FromJsonData(questionnaire_data)
 
     def lancer(self):
         score = 0
@@ -140,15 +156,15 @@ lancer_questionnaire(questionnaire)"""
 #).lancer()
 
 
-filename="fruit_pomme_confirme.json"
-f=open(filename,"r")
-json_data=f.read()
-f.close()
-questionnaire_data=json.loads(json_data)
 
+#Questionnaire.lancer_quest("cinemas_startrek_debutant.json").lancer()
 
-   
-   
-Questionnaire.FromJsonData(questionnaire_data).lancer()
+print(sys.argv)
+if len(sys.argv)<2:
+    print("Eurreur : choose a file to run ")
+    exit(0)
 
-
+filename=sys.argv[1]
+questionnaire=Questionnaire.lancer_quest(sys.argv[1])
+if questionnaire:
+    questionnaire.lancer()
