@@ -102,7 +102,8 @@ class Questionnaire:
 
     def FromJsonData(data):
         question=data['questions']
-        questions=[Question.FromJsonData(i) for i in question]
+        questions=[Question.FromJsonData(i) for i in question ]
+        questions=[i for i in questions if i]
           
         return Questionnaire(questions,data["categorie"],data["titre"],data["difficulte"])
 
